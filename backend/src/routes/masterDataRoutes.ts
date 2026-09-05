@@ -14,6 +14,7 @@ contactRoutes.patch('/:id/status', requireRole([UserRole.ADMIN, UserRole.ACCOUNT
 export const productRoutes = Router();
 productRoutes.use(authenticate);
 productRoutes.get('/', MasterDataController.listProducts);
+productRoutes.get('/stock-summary', MasterDataController.getStockSummary);
 productRoutes.get('/:id', MasterDataController.getProduct);
 productRoutes.post('/', requireRole([UserRole.ADMIN, UserRole.ACCOUNTANT]), MasterDataController.createProduct);
 productRoutes.put('/:id', requireRole([UserRole.ADMIN, UserRole.ACCOUNTANT]), MasterDataController.updateProduct);

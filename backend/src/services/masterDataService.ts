@@ -288,6 +288,81 @@ export class MasterDataService {
     };
   }
 
+  static async getStockSummary() {
+    const products = await prisma.product.findMany({
+      include: {
+        category: true,
+      },
+      orderBy: { name: 'asc' },
+    });
+
+    const vendorLines = await prisma.vendorBillLine.findMany({
+      where: {
+        vendorBill: { status: { in: ['POSTED', 'PARTIALLY_PAID', 'PAID'] } },
+      },
+      select: { productId: true, quantity: true, total: true },
+    });
+
+    const invoiceLines = await prisma.customerInvoiceLine.findMany({
+      where: {
+        customerInvoice: { status: { in: ['POSTED', 'PARTIALLY_PAID', 'PAID'] } },
+      },
+      select: { productId: true, quantity: true, total: true },
+    });
+
+    const purchaseMap: Record<number, { qty: number; value: number }> = {};
+    for (const line of vendorLines) {
+      if (!purchaseMap[line.productId]) purchaseMap[line.productId] = { qty: 0, value: 0 };
+      purchaseMap[line.productId].qty += Number(line.quantity);
+      purchaseMap[line.productId].value += Number(line.total);
+    }
+
+    const salesMap: Record<number, { qty: number; value: number }> = {};
+    for (const line of invoiceLines) {
+      if (!salesMap[line.productId]) salesMap[line.productId] = { qty: 0, value: 0 };
+      salesMap[line.productId].qty += Number(line.quantity);
+      salesMap[line.productId].value += Number(line.total);
+    }
+
+    let totalValuation = 0;
+    let totalStockUnits = 0;
+
+    const summary = products.map((p) => {
+      const pPurchases = purchaseMap[p.id] || { qty: 0, value: 0 };
+      const pSales = salesMap[p.id] || { qty: 0, value: 0 };
+      const currentStock = Math.max(0, pPurchases.qty - pSales.qty);
+      const stockValuation = currentStock * Number(p.costPrice);
+
+      totalStockUnits += currentStock;
+      totalValuation += stockValuation;
+
+      return {
+        id: p.id,
+        name: p.name,
+        type: p.type,
+        category: p.category?.name || 'General',
+        salesPrice: Number(p.salesPrice),
+        costPrice: Number(p.costPrice),
+        quantityPurchased: pPurchases.qty,
+        purchasesValue: Number(pPurchases.value.toFixed(2)),
+        quantitySold: pSales.qty,
+        salesValue: Number(pSales.value.toFixed(2)),
+        currentStock,
+        stockValuation: Number(stockValuation.toFixed(2)),
+        status: p.status,
+      };
+    });
+
+    return {
+      products: summary,
+      totals: {
+        totalProducts: products.length,
+        totalStockUnits,
+        totalValuation: Number(totalValuation.toFixed(2)),
+      },
+    };
+  }
+
   static async createProduct(data: any) {
     return await prisma.product.create({
       data: {

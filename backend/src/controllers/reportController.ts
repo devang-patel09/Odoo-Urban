@@ -70,4 +70,24 @@ export class ReportController {
       next(error);
     }
   }
+
+  static async getSalesAnalytics(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { startDate, endDate } = req.query as { startDate?: string; endDate?: string };
+      const report = await ReportService.getSalesAnalytics(startDate, endDate);
+      return successResponse(res, report, 'Sales Analytics retrieved');
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async getPurchaseAnalytics(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { startDate, endDate } = req.query as { startDate?: string; endDate?: string };
+      const report = await ReportService.getPurchaseAnalytics(startDate, endDate);
+      return successResponse(res, report, 'Purchase Analytics retrieved');
+    } catch (error) {
+      next(error);
+    }
+  }
 }

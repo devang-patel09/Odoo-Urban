@@ -49,3 +49,16 @@ reportRoutes.get(
   requireRole([UserRole.ADMIN, UserRole.ACCOUNTANT]),
   ReportController.getDashboardKPIs
 );
+
+reportRoutes.get(
+  '/sales-analytics',
+  requireRole([UserRole.ADMIN, UserRole.ACCOUNTANT]),
+  ReportController.getSalesAnalytics
+);
+
+reportRoutes.get(
+  '/purchase-analytics',
+  requireRole([UserRole.ADMIN, UserRole.ACCOUNTANT]),
+  ReportController.getPurchaseAnalytics
+);
+

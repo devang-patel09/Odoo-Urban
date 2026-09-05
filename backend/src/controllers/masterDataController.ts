@@ -106,6 +106,15 @@ export class MasterDataController {
     }
   }
 
+  static async getStockSummary(req: Request, res: Response, next: NextFunction) {
+    try {
+      const summary = await MasterDataService.getStockSummary();
+      return successResponse(res, summary, 'Product stock summary retrieved');
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async createProduct(req: Request, res: Response, next: NextFunction) {
     try {
       const validated = productSchema.parse(req.body);

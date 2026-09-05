@@ -7,8 +7,10 @@ import { SignUpPage } from './features/auth/SignUpPage';
 import { ForgotPasswordPage } from './features/auth/ForgotPasswordPage';
 import { ProtectedRoute } from './features/auth/ProtectedRoute';
 import { UserManagementPage } from './features/admin/UserManagementPage';
+import { CompanySettingsPage } from './features/admin/CompanySettingsPage';
 import { ContactsPage } from './features/contacts/ContactsPage';
 import { ProductsPage } from './features/products/ProductsPage';
+import { ProductStockPage } from './features/products/ProductStockPage';
 import { ChartOfAccountsPage } from './features/accounts/ChartOfAccountsPage';
 import { JournalsPage } from './features/journals/JournalsPage';
 import { AnalyticAccountsPage } from './features/analytics/AnalyticAccountsPage';
@@ -90,6 +92,10 @@ export const router = createBrowserRouter([
       {
         path: 'products/categories',
         element: <ProductsPage />,
+      },
+      {
+        path: 'products/stock',
+        element: <ProductStockPage />,
       },
       {
         path: 'accounting/chart-of-accounts',
@@ -185,6 +191,14 @@ export const router = createBrowserRouter([
         path: 'reports/budget-report',
         element: <ReportsPage />,
       },
+      {
+        path: 'reports/sales-analytics',
+        element: <ReportsPage />,
+      },
+      {
+        path: 'reports/purchase-analytics',
+        element: <ReportsPage />,
+      },
 
       // Customer & Vendor Self-Service Portal
       {
@@ -206,6 +220,14 @@ export const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={['ADMIN']}>
             <UserManagementPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: 'admin/settings',
+        element: (
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <CompanySettingsPage />
           </ProtectedRoute>
         ),
       },

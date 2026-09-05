@@ -509,4 +509,172 @@ export class ReportService {
       topExpenseAccounts: pnl.expenses.accounts.slice(0, 5),
     };
   }
+
+  /**
+   * Sales Analytics
+   * Revenue, customer volume, product breakdown, and monthly revenue trends
+   */
+  static async getSalesAnalytics(startDate?: string, endDate?: string) {
+    const dateFilter: any = {};
+    if (startDate) dateFilter.gte = new Date(startDate);
+    if (endDate) dateFilter.lte = new Date(endDate);
+
+    const invoices = await prisma.customerInvoice.findMany({
+      where: {
+        status: { in: [InvoiceStatus.POSTED, InvoiceStatus.PARTIALLY_PAID] },
+        ...(startDate || endDate ? { invoiceDate: dateFilter } : {}),
+      },
+      include: {
+        customer: true,
+        lines: {
+          include: {
+            product: true,
+          },
+        },
+      },
+      orderBy: { invoiceDate: 'asc' },
+    });
+
+    let totalRevenue = 0;
+    let totalTax = 0;
+    let totalPaid = 0;
+    let totalOutstanding = 0;
+
+    const customerMap: Record<string, { customer: string; count: number; total: number }> = {};
+    const productMap: Record<string, { name: string; code: string; qty: number; total: number }> = {};
+    const monthlyMap: Record<string, { month: string; count: number; total: number }> = {};
+
+    for (const inv of invoices) {
+      const tot = Number(inv.totalAmount);
+      const tax = Number(inv.taxAmount);
+      const paid = Number(inv.paidAmount);
+      const due = Number(inv.amountDue);
+
+      totalRevenue += tot;
+      totalTax += tax;
+      totalPaid += paid;
+      totalOutstanding += due;
+
+      // Customer
+      const custName = inv.customer?.name || 'Walk-in Customer';
+      if (!customerMap[custName]) customerMap[custName] = { customer: custName, count: 0, total: 0 };
+      customerMap[custName].count += 1;
+      customerMap[custName].total += tot;
+
+      // Month
+      const monthKey = inv.invoiceDate.toISOString().substring(0, 7); // YYYY-MM
+      if (!monthlyMap[monthKey]) monthlyMap[monthKey] = { month: monthKey, count: 0, total: 0 };
+      monthlyMap[monthKey].count += 1;
+      monthlyMap[monthKey].total += tot;
+
+      // Lines / Products
+      for (const line of inv.lines) {
+        const pName = line.product?.name || line.description || 'Custom Item';
+        const pCode = line.product?.code || 'GEN';
+        const qty = Number(line.quantity);
+        const sub = Number(line.subtotal);
+
+        if (!productMap[pName]) productMap[pName] = { name: pName, code: pCode, qty: 0, total: 0 };
+        productMap[pName].qty += qty;
+        productMap[pName].total += sub;
+      }
+    }
+
+    return {
+      summary: {
+        totalRevenue: Number(totalRevenue.toFixed(2)),
+        totalTax: Number(totalTax.toFixed(2)),
+        totalPaid: Number(totalPaid.toFixed(2)),
+        totalOutstanding: Number(totalOutstanding.toFixed(2)),
+        invoiceCount: invoices.length,
+      },
+      byCustomer: Object.values(customerMap).sort((a, b) => b.total - a.total),
+      byProduct: Object.values(productMap).sort((a, b) => b.total - a.total),
+      monthlyTrends: Object.values(monthlyMap).sort((a, b) => a.month.localeCompare(b.month)),
+    };
+  }
+
+  /**
+   * Purchase Analytics
+   * Expenses, vendor spend, product purchases, and monthly spending trends
+   */
+  static async getPurchaseAnalytics(startDate?: string, endDate?: string) {
+    const dateFilter: any = {};
+    if (startDate) dateFilter.gte = new Date(startDate);
+    if (endDate) dateFilter.lte = new Date(endDate);
+
+    const bills = await prisma.vendorBill.findMany({
+      where: {
+        status: { in: [InvoiceStatus.POSTED, InvoiceStatus.PARTIALLY_PAID] },
+        ...(startDate || endDate ? { billDate: dateFilter } : {}),
+      },
+      include: {
+        vendor: true,
+        lines: {
+          include: {
+            product: true,
+          },
+        },
+      },
+      orderBy: { billDate: 'asc' },
+    });
+
+    let totalSpend = 0;
+    let totalTax = 0;
+    let totalPaid = 0;
+    let totalOutstanding = 0;
+
+    const vendorMap: Record<string, { vendor: string; count: number; total: number }> = {};
+    const productMap: Record<string, { name: string; code: string; qty: number; total: number }> = {};
+    const monthlyMap: Record<string, { month: string; count: number; total: number }> = {};
+
+    for (const bill of bills) {
+      const tot = Number(bill.totalAmount);
+      const tax = Number(bill.taxAmount);
+      const paid = Number(bill.paidAmount);
+      const due = Number(bill.amountDue);
+
+      totalSpend += tot;
+      totalTax += tax;
+      totalPaid += paid;
+      totalOutstanding += due;
+
+      // Vendor
+      const vendName = bill.vendor?.name || 'General Supplier';
+      if (!vendorMap[vendName]) vendorMap[vendName] = { vendor: vendName, count: 0, total: 0 };
+      vendorMap[vendName].count += 1;
+      vendorMap[vendName].total += tot;
+
+      // Month
+      const monthKey = bill.billDate.toISOString().substring(0, 7); // YYYY-MM
+      if (!monthlyMap[monthKey]) monthlyMap[monthKey] = { month: monthKey, count: 0, total: 0 };
+      monthlyMap[monthKey].count += 1;
+      monthlyMap[monthKey].total += tot;
+
+      // Lines / Products
+      for (const line of bill.lines) {
+        const pName = line.product?.name || line.description || 'Supplies Item';
+        const pCode = line.product?.code || 'PUR';
+        const qty = Number(line.quantity);
+        const sub = Number(line.subtotal);
+
+        if (!productMap[pName]) productMap[pName] = { name: pName, code: pCode, qty: 0, total: 0 };
+        productMap[pName].qty += qty;
+        productMap[pName].total += sub;
+      }
+    }
+
+    return {
+      summary: {
+        totalSpend: Number(totalSpend.toFixed(2)),
+        totalTax: Number(totalTax.toFixed(2)),
+        totalPaid: Number(totalPaid.toFixed(2)),
+        totalOutstanding: Number(totalOutstanding.toFixed(2)),
+        billCount: bills.length,
+      },
+      byVendor: Object.values(vendorMap).sort((a, b) => b.total - a.total),
+      byProduct: Object.values(productMap).sort((a, b) => b.total - a.total),
+      monthlyTrends: Object.values(monthlyMap).sort((a, b) => a.month.localeCompare(b.month)),
+    };
+  }
 }
