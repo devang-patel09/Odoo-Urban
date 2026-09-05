@@ -145,7 +145,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       items: [
         { title: 'Sales Orders', path: '/sales/orders' },
         { title: 'Customer Invoices', path: '/sales/invoices' },
-        { title: 'Customers', path: '/sales/customers' },
+        { title: 'Contact Master', path: '/sales/customers' },
         { title: 'Customer Payments', path: '/accounting/payments' },
       ],
     },
