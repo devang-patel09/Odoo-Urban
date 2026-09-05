@@ -570,7 +570,7 @@ export class ReportService {
       // Lines / Products
       for (const line of inv.lines) {
         const pName = line.product?.name || line.description || 'Custom Item';
-        const pCode = line.product?.code || 'GEN';
+        const pCode = `PROD-${line.productId}`;
         const qty = Number(line.quantity);
         const sub = Number(line.subtotal);
 
@@ -654,7 +654,7 @@ export class ReportService {
       // Lines / Products
       for (const line of bill.lines) {
         const pName = line.product?.name || line.description || 'Supplies Item';
-        const pCode = line.product?.code || 'PUR';
+        const pCode = `PROD-${line.productId}`;
         const qty = Number(line.quantity);
         const sub = Number(line.subtotal);
 
