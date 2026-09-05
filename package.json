@@ -10,7 +10,7 @@
     "build:frontend": "npm --prefix frontend run build",
     "prisma:generate": "npx prisma generate",
     "prisma:push": "npx prisma db push",
-    "prisma:seed": "npx ts-node prisma/seed.ts"
+    "prisma:seed": "node prisma/dist/seed.js"
   },
   "keywords": [
     "accounting",
