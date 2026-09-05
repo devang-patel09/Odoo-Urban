@@ -151,7 +151,7 @@ export class AccountingService {
     }
 
     return prisma.$transaction(async (tx) => {
-      const entryNumber = await SequenceService.getNextSequence(tx, 'JE');
+      const entryNumber = await SequenceService.getNextJournalEntryNumber(tx);
       const entryDate = new Date(input.date);
 
       const entry = await tx.journalEntry.create({
