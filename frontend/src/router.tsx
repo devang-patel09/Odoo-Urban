@@ -7,6 +7,11 @@ import { SignUpPage } from './features/auth/SignUpPage';
 import { ForgotPasswordPage } from './features/auth/ForgotPasswordPage';
 import { ProtectedRoute } from './features/auth/ProtectedRoute';
 import { UserManagementPage } from './features/admin/UserManagementPage';
+import { ContactsPage } from './features/contacts/ContactsPage';
+import { ProductsPage } from './features/products/ProductsPage';
+import { ChartOfAccountsPage } from './features/accounts/ChartOfAccountsPage';
+import { JournalsPage } from './features/journals/JournalsPage';
+import { AnalyticAccountsPage } from './features/analytics/AnalyticAccountsPage';
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +46,40 @@ export const router = createBrowserRouter([
         path: 'accounting/overview',
         element: <DashboardPage />,
       },
+      // Master Data Routes
+      {
+        path: 'contacts',
+        element: <ContactsPage />,
+      },
+      {
+        path: 'sales/customers',
+        element: <ContactsPage />,
+      },
+      {
+        path: 'purchases/vendors',
+        element: <ContactsPage />,
+      },
+      {
+        path: 'products',
+        element: <ProductsPage />,
+      },
+      {
+        path: 'products/categories',
+        element: <ProductsPage />,
+      },
+      {
+        path: 'accounting/chart-of-accounts',
+        element: <ChartOfAccountsPage />,
+      },
+      {
+        path: 'accounting/journals',
+        element: <JournalsPage />,
+      },
+      {
+        path: 'accounting/analytic-accounts',
+        element: <AnalyticAccountsPage />,
+      },
+      // Admin Routes
       {
         path: 'admin/users',
         element: (
@@ -54,7 +93,7 @@ export const router = createBrowserRouter([
         path: '*',
         element: (
           <div className="bg-white p-8 rounded-lg border border-gray-200 text-center">
-            <h2 className="text-xl font-bold text-gray-800">Module Initializing</h2>
+            <h2 className="text-xl font-bold text-gray-800">Module Under Construction</h2>
             <p className="text-gray-500 text-sm mt-1">This module is part of the ongoing implementation phases.</p>
           </div>
         ),

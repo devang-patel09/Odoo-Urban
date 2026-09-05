@@ -28,8 +28,22 @@ app.get('/api/health', (req, res) => {
 
 // Route imports
 import authRoutes from './routes/authRoutes';
+import {
+  contactRoutes,
+  productRoutes,
+  categoryRoutes,
+  accountRoutes,
+  journalRoutes,
+  analyticRoutes,
+} from './routes/masterDataRoutes';
 
 app.use('/api/auth', authRoutes);
+app.use('/api/contacts', contactRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/accounts', accountRoutes);
+app.use('/api/journals', journalRoutes);
+app.use('/api/analytics', analyticRoutes);
 
 // Centralized error handler
 app.use(errorHandler);
