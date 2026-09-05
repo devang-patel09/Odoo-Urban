@@ -2,11 +2,32 @@ import React from 'react';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { DashboardPage } from './features/dashboard/DashboardPage';
+import { LoginPage } from './features/auth/LoginPage';
+import { SignUpPage } from './features/auth/SignUpPage';
+import { ForgotPasswordPage } from './features/auth/ForgotPasswordPage';
+import { ProtectedRoute } from './features/auth/ProtectedRoute';
+import { UserManagementPage } from './features/admin/UserManagementPage';
 
 export const router = createBrowserRouter([
   {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
+    path: '/signup',
+    element: <SignUpPage />,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPasswordPage />,
+  },
+  {
     path: '/',
-    element: <MainLayout />,
+    element: (
+      <ProtectedRoute>
+        <MainLayout />
+      </ProtectedRoute>
+    ),
     children: [
       {
         index: true,
@@ -19,6 +40,14 @@ export const router = createBrowserRouter([
       {
         path: 'accounting/overview',
         element: <DashboardPage />,
+      },
+      {
+        path: 'admin/users',
+        element: (
+          <ProtectedRoute allowedRoles={['ADMIN']}>
+            <UserManagementPage />
+          </ProtectedRoute>
+        ),
       },
       // Placeholders for subsequent phases
       {
@@ -34,6 +63,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <Navigate to="/dashboard" replace />,
+    element: <Navigate to="/login" replace />,
   },
 ]);

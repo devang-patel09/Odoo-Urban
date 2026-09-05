@@ -26,7 +26,10 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Route imports will be added here in subsequent phases
+// Route imports
+import authRoutes from './routes/authRoutes';
+
+app.use('/api/auth', authRoutes);
 
 // Centralized error handler
 app.use(errorHandler);
