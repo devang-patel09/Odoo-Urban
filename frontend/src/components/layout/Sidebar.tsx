@@ -132,6 +132,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       items: [
         { title: 'Overview', path: '/accounting/overview' },
         { title: 'Journal Entries', path: '/accounting/journal-entries' },
+        { title: 'Payments Ledger', path: '/accounting/payments' },
+        { title: 'OCR Bill Assistant', path: '/accounting/ocr-assistant' },
         { title: 'Chart of Accounts', path: '/accounting/chart-of-accounts' },
         { title: 'Journals', path: '/accounting/journals' },
         { title: 'Analytic Accounts', path: '/accounting/analytic-accounts' },
@@ -144,7 +146,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { title: 'Sales Orders', path: '/sales/orders' },
         { title: 'Customer Invoices', path: '/sales/invoices' },
         { title: 'Customers', path: '/sales/customers' },
-        { title: 'Customer Payments', path: '/sales/payments' },
+        { title: 'Customer Payments', path: '/accounting/payments' },
       ],
     },
     {
@@ -154,7 +156,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         { title: 'Purchase Orders', path: '/purchases/orders' },
         { title: 'Vendor Bills', path: '/purchases/bills' },
         { title: 'Vendors', path: '/purchases/vendors' },
-        { title: 'Vendor Payments', path: '/purchases/payments' },
+        { title: 'Vendor Payments', path: '/accounting/payments' },
       ],
     },
     {

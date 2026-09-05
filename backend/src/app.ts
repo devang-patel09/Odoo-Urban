@@ -37,6 +37,18 @@ import {
   analyticRoutes,
 } from './routes/masterDataRoutes';
 
+import {
+  purchaseRoutes,
+  vendorBillRoutes,
+  salesRoutes,
+  invoiceRoutes,
+  paymentRoutes,
+} from './routes/transactionRoutes';
+import { accountingRoutes } from './routes/accountingRoutes';
+import { budgetRoutes } from './routes/budgetRoutes';
+import { reportRoutes } from './routes/reportRoutes';
+import { ocrRoutes } from './routes/ocrRoutes';
+
 app.use('/api/auth', authRoutes);
 app.use('/api/contacts', contactRoutes);
 app.use('/api/products', productRoutes);
@@ -44,6 +56,15 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/accounts', accountRoutes);
 app.use('/api/journals', journalRoutes);
 app.use('/api/analytics', analyticRoutes);
+app.use('/api/purchases', purchaseRoutes);
+app.use('/api/vendor-bills', vendorBillRoutes);
+app.use('/api/sales', salesRoutes);
+app.use('/api/invoices', invoiceRoutes);
+app.use('/api/payments', paymentRoutes);
+app.use('/api/accounting', accountingRoutes);
+app.use('/api/budgets', budgetRoutes);
+app.use('/api/reports', reportRoutes);
+app.use('/api/ocr', ocrRoutes);
 
 // Centralized error handler
 app.use(errorHandler);

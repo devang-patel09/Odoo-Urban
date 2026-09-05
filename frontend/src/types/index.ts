@@ -302,8 +302,11 @@ export interface JournalEntry {
   sourceType?: string | null;
   sourceId?: number | null;
   vendorBillId?: number | null;
+  vendorBill?: VendorBill | null;
   customerInvoiceId?: number | null;
+  customerInvoice?: CustomerInvoice | null;
   paymentId?: number | null;
+  payment?: Payment | null;
   totalDebit: number | string;
   totalCredit: number | string;
   items?: JournalItem[];
